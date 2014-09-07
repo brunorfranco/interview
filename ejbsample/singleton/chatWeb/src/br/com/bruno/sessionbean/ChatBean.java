@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.interceptor.Interceptors;
@@ -24,7 +25,9 @@ public class ChatBean {
 		this.salas.add(sala);
 	}
 
+	@Schedule(second ="*/5 ",minute ="*",hour ="*")
 	public List<String> listaSalas() {
+		System.out.println("Listando as salas");
 		return new ArrayList<String>(this.salas);
 	}
 
