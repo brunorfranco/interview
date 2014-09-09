@@ -1,0 +1,48 @@
+package br.com.megasoft.contaspublicas.tool;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Serializable;
+
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+
+public class S3AmazonContasPublicas implements Serializable {
+
+	private static final long serialVersionUID = 463416872953130258L;
+
+	private AmazonS3 _s3;
+	private final String BUCKETNAME = "megasoft-transparencia";
+
+	public S3AmazonContasPublicas() {
+		this._s3 = new AmazonS3Client(new BasicAWSCredentials("key", "credential"));
+		this._s3.setRegion(Region.getRegion(Regions.US_EAST_1));
+	}
+
+	public void uploadPublic(String fileName, byte[] content, String path) throws IOException {
+
+		File file = null;
+		file = File.createTempFile("s3upload_", ".tmp");
+		FileOutputStream fos = new FileOutputStream(file);
+        fos.write(content);
+        fos.flush();
+        fos.close();
+
+		PutObjectRequest putObjectRequest = new PutObjectRequest(this.BUCKETNAME, String.format("%s%s", path, fileName), file);
+		putObjectRequest.setCannedAcl(CannedAccessControlList.PublicRead);
+		this._s3.putObject(putObjectRequest);
+
+		file.delete();
+	}
+
+	public void deletePublic(String caminhoArquivo){
+		_s3.deleteObject(BUCKETNAME, caminhoArquivo);
+	}
+	
+}

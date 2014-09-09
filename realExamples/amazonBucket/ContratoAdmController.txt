@@ -1,0 +1,106 @@
+package br.com.megasoft.contaspublicas.controller;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import org.primefaces.event.FileUploadEvent;
+
+import br.com.megasoft.contaspublicas.business.AnexoContratoBusiness;
+import br.com.megasoft.contaspublicas.entity.Arquivo;
+import br.com.megasoft.contaspublicas.entity.Contrato;
+import br.com.megasoft.contaspublicas.tool.S3AmazonContasPublicas;
+import br.com.megasoft.core.business.MegaBusinessException;
+import br.com.megasoft.core.faces.MegaFaces;
+import br.com.megasoft.core.util.StringUtil;
+
+@ViewScoped
+@ManagedBean(name = "contratoAdmBean")
+public class ContratoAdmController implements Serializable {
+
+	private static final long serialVersionUID = 5287919138451187619L;
+	private AnexoContratoBusiness anexoContratoBusiness = new AnexoContratoBusiness();
+	private static Contrato contratoAnexo;
+	private Contrato entitySelect;
+	private Arquivo arquivoSelect;
+	
+	public AnexoContratoBusiness getAnexoContratoBusiness() {
+		return anexoContratoBusiness;
+	}
+
+	public void setAnexoContratoBusiness(AnexoContratoBusiness anexoContratoBusiness) {
+		this.anexoContratoBusiness = anexoContratoBusiness;
+	}
+
+	public Contrato getEntitySelect() {
+		return entitySelect;
+	}
+
+	public void setEntitySelect(Contrato entitySelect) {
+		contratoAnexo = entitySelect;
+		this.entitySelect = entitySelect;
+	}
+
+	public Arquivo getArquivoSelect() {
+		return arquivoSelect;
+	}
+
+	public void setArquivoSelect(Arquivo arquivoSelect) {
+		this.arquivoSelect = arquivoSelect;
+	}
+
+	public void handleFileUpload(FileUploadEvent event) {
+
+		try {
+			S3AmazonContasPublicas s3 = new S3AmazonContasPublicas();
+			s3.uploadPublic(event.getFile().getFileName(), event.getFile().getContents(), "arquivo/contrato/");
+		} catch (IOException e ) {
+			MegaFaces.getMessage().fatal(e.getMessage());
+		}
+
+	}
+	
+	public void handleFileUploadAnexo(FileUploadEvent event) { 
+		
+		try {
+			if(isNomeArquivoInvalido(event.getFile().getFileName())){
+				FacesMessage msg = new FacesMessage("Erro", "Nome inválido, renomeie o arquivo retirando os acentos e caracteres especiais.");  
+			    FacesContext.getCurrentInstance().addMessage(null, msg); 
+			} else {
+				anexoContratoBusiness.uploadAnexoAmazon(event, contratoAnexo);
+		        FacesMessage msg = new FacesMessage("Sucesso", new String(event.getFile().getFileName().getBytes(Charset.defaultCharset()),"UTF8") 
+		        	+ " foi salvo. ");  
+		        FacesContext.getCurrentInstance().addMessage(null, msg); 
+			}
+		} catch (MegaBusinessException e) {
+			e.printStackTrace();
+			FacesMessage msg = new FacesMessage("Erro", "Ocorreu um erro ao salvar o arquivo, provável que o tamanho do nome do arquivo esteja muito grande.");  
+		    FacesContext.getCurrentInstance().addMessage(null, msg);  
+		} catch (UnsupportedEncodingException e) {
+			FacesMessage msg = new FacesMessage("Erro", "Ocorreu um erro ao salvar o arquivo, provável problema de caractéres especiais.");  
+		    FacesContext.getCurrentInstance().addMessage(null, msg);
+		} 
+       
+    }
+	
+	public void onDelete(){
+		anexoContratoBusiness.deleteAnexo(arquivoSelect);
+		FacesMessage msg = new FacesMessage("Sucesso, " + arquivoSelect.getNome() + " deletado com sucesso.", "");  
+	    FacesContext.getCurrentInstance().addMessage(null, msg);  
+	}
+	
+	public boolean isNomeArquivoInvalido(String nomeArquivo){
+		if(StringUtil.isSemAcentuacao(nomeArquivo)){
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+}
