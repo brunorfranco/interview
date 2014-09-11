@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" 
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:acesso="http://java.sun.com/jsf/composite/acesso"
+	xmlns:mega="http://java.sun.com/jsf/composite/ui"
+	template="#{skin.template}">
+
+<ui:define name="metadata">
+	<acesso:contador />
+	<f:event listener="#{notaFiscalEco.loadVerificaEconomicoSelecionado}" type="preRenderView" />
+</ui:define>
+
+<ui:define name="titulo">Nota Fiscal</ui:define>
+<ui:define name="subtitulo">Importação</ui:define>
+
+<ui:define name="nav1">
+   <h:link outcome="index" value="Voltar" title="Voltar" styleClass="voltar"/>
+</ui:define>
+
+<ui:define name="content">
+
+<div class="box-info">
+	1º Envie o arquivo XML para validação. <br/>
+	2º O Sistema só gera as notas fiscais em bloco que não apresentaram erros e que nem foram salvas anteriormente.
+</div>
+
+<h:form id="form-importar" prependId="false">
+	<p:fileUpload fileUploadListener="#{notaFiscalEco.uploadXml}"   
+         		 	  mode="advanced" update=":messages :frm-registro"  
+	              auto="true" sizeLimit="15000000"  
+	              allowTypes="/(\.|\/)(xml)$/" label="Enviar (XML)" showButtons="false" required="true" />
+</h:form>
+<br/>
+
+<h:form id="frm-registro" prependId="false">
+<fieldset>
+<legend>Registros [#{notaFiscalEco.list.size()}]</legend>
+<div style="float:right;" >
+	<h:commandButton id="btnSalvar" action="#{notaFiscalEco.salvarNotaFiscalBlocoXml}" value="Salvar" 
+					styleClass="salvar" rendered="#{notaFiscalEco.listaErros.size() == 0 &amp;&amp; notaFiscalEco.list.size() > 0}" />
+</div>
+<hr/>
+<table id="grid" class="grid" >
+	<colgroup>
+		<col width="50"/>
+		<col width="90"/>
+		<col width="80"/>
+		<col width="80"/>
+		<col width="70"/>
+		<col width="50"/>
+		<col width="30"/>
+		<col width="30"/>
+	</colgroup>
+	<tr>
+		<th>Número</th>
+		<th>Data de Emissão</th>
+		<th>Vlr. Nota</th>
+		<th>Vlr. ISSQN</th>
+		<th>Vlr. Cancelamento</th>
+		<th>Alíquota(%)</th>
+		<th>ISSQN retido</th>
+		<th>-</th>
+	</tr>
+	<ui:repeat var="r" value="#{notaFiscalEco.list}">
+	<tr style="background-color: #{(r.possuiErroImportacao == true)? '#FFE9E9' : '#D9FFBF'};">
+		<td>#{r.numero}</td>
+		<td>
+			<h:outputText value="#{r.dtEmissao}">
+				<f:convertDateTime pattern="d/mm/yy hh:mm"/>
+			</h:outputText>
+		</td>
+		<td>
+			<h:outputText value="#{r.vlrNota}">
+				<f:convertNumber pattern="#,##0"/>
+			</h:outputText>
+		</td>
+		<td>
+			<h:outputText value="#{r.issqnRetido}">
+				<f:convertNumber pattern="#,##0"/>
+			</h:outputText>
+		</td>
+		<td>
+			<h:outputText value="#{r.vlrCancelado}">
+				<f:convertNumber pattern="#,##0"/>
+			</h:outputText>
+		</td>
+		<td>
+			<h:outputText value="#{r.vlrAliquota}">
+				<f:convertNumber pattern="#,##0"/>
+			</h:outputText>
+		</td>
+		<td>#{(r.isISSRetido == true)? 'Sim' : 'Não'}</td>
+		<td>
+			<h:button rendered="#{r.possuiErroImportacao}" value="Alertas" onclick="alert('#{r.descricaoErroImportacao}'); return false;" styleClass="pesquisar-i" />
+		</td>
+	</tr>
+	</ui:repeat>
+</table>
+
+<hr/>
+
+<nav>
+	<h:button rendered="#{notaFiscalEco.listaErros.size() == 0 &amp;&amp; notaFiscalEco.list.size() > 0}" value="Salvar" 
+			  onclick="jQuery('#btnSalvar').click(); return false;" 
+			  styleClass="salvar" />
+	<h:link rendered="#{notaFiscalEco.list.size() > 0}" value="Cancelar" outcome="index" />
+</nav>
+</fieldset>	
+</h:form>
+
+</ui:define>
+</ui:composition>

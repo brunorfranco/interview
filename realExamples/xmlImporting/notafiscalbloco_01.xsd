@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://megasoftarrecadanet.com.br/xsd/notafiscalbloco_01.xsd"
+	xmlns:tns="http://megasoftarrecadanet.com.br/xsd/notafiscalbloco_01.xsd"
+	elementFormDefault="qualified">
+
+	<complexType name="tcArrecadanetType">
+		<sequence>
+			<element name="layout" type="int" maxOccurs="1"
+				minOccurs="1"></element>
+			<element name="economico" type="tns:tcEconomicoType" maxOccurs="1"
+				minOccurs="1"></element>
+			<element name="notas" type="tns:tcNotasType" maxOccurs="1"
+				minOccurs="1"></element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="tcEconomicoType">
+		<sequence>
+            <element name="cnpj" type="tns:tsCnpjType" maxOccurs="1" minOccurs="1">
+            </element>
+            <element name="inscricaomunicipal" type="tns:tsInscricaomunicipalType"
+				maxOccurs="unbounded" minOccurs="1">
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="tcNotasType">
+		<sequence>
+			<element name="nota" type="tns:tcNotaType" maxOccurs="unbounded"
+				minOccurs="1">
+			</element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="tcNotaType">
+		<sequence>
+			<element name="numero" type="int" maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="dataemissao" type="dateTime"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="ano" type="int"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="mes" type="int"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="valornota" type="tns:tsValorType" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="valorissqn" type="tns:tsValorType" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="datacancelamento" type="dateTime" maxOccurs="1"
+				minOccurs="0">
+			</element>
+			<element name="valorcancelamento" type="tns:tsValorType" maxOccurs="1"
+				minOccurs="0">
+			</element>
+			<element name="flagissretido" type="tns:tsFlagIssRetido" maxOccurs="1"
+				minOccurs="1">
+			</element>
+			<element name="valoraliquota" type="float" maxOccurs="1"
+				minOccurs="1">
+			</element>
+		</sequence>
+	</complexType>
+
+	<element name="arrecadanet" type="tns:tcArrecadanetType">
+		<annotation>
+			<documentation>Nó principal do arquivo XML</documentation>
+		</annotation>
+	</element>
+
+	<simpleType name="tsCnpjType">
+		<restriction base="string">
+			<minLength value="14"></minLength>
+			<maxLength value="14"></maxLength>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="tsInscricaomunicipalType">
+		<restriction base="int">
+			<minInclusive value="0"></minInclusive>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="tsValorType">
+		<restriction base="float">
+			<minInclusive value="0"></minInclusive>
+		</restriction>
+	</simpleType>
+	
+	<simpleType name="tsFlagIssRetido">
+        <annotation>
+        	<documentation>Opção de reter o ISS ou não
+[0 = Não, 1 = Sim]</documentation>
+        </annotation>
+        <restriction base="int">
+			<enumeration value="0"></enumeration>
+			<enumeration value="1"></enumeration>
+		</restriction>
+	</simpleType>
+	
+</schema>
