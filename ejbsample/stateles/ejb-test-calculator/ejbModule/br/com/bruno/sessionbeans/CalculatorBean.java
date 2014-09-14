@@ -2,11 +2,11 @@ package br.com.bruno.sessionbeans;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.Local;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 
 @Stateless
-@Local(Calculator.class)
+@Remote(Calculator.class)
 public class CalculatorBean implements Calculator {
 	public double soma(double a, double b) {
 		return a + b;

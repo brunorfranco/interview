@@ -25,7 +25,7 @@ public class ChatBean {
 		this.salas.add(sala);
 	}
 
-	@Schedule(second ="*/5 ",minute ="*",hour ="*")
+	@Schedule(second ="*/50 ",minute ="*",hour ="*")
 	public List<String> listaSalas() {
 		System.out.println("Listando as salas");
 		return new ArrayList<String>(this.salas);

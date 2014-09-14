@@ -2,9 +2,9 @@
 	xsi:schemaLocation="
 http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
-    <!--  
+    
 	<alternatives>
-		<class>org.cdi.advocacy.JsonRestAtmTransport</class>
+		<class>org.cdi.advocacy.JsonRestAtmTransportImpl</class>
 	</alternatives>
-	-->
+
 </beans>

@@ -9,7 +9,7 @@ public class LoggingInterceptor {
 	public Object interceptador(InvocationContext ic) throws Exception {
 		System.out.println(" CHAMANDO O MÉTODO : " + ic.getMethod());
 		
-		Object retornoDoMetodoDeNegocio = ic. proceed ();
+		Object retornoDoMetodoDeNegocio = ic.proceed();
 
 		System.out.println(" MÉTODO " + ic.getMethod() + " FINALIZADO ");
 		return retornoDoMetodoDeNegocio;
