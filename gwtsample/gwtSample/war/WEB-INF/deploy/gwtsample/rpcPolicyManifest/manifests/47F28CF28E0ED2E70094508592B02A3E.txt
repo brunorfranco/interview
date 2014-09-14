@@ -1,0 +1,2 @@
+serviceClass: com.bruno.gwt.client.GreetingService
+path: 46196ED413044454ECCBEDB8571E5F32.gwt.rpc
