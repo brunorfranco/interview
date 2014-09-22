@@ -16,7 +16,7 @@ import br.com.bruno.interceptor.LoggingInterceptor;
 
 @Singleton
 @Startup
-@Interceptors({LoggingInterceptor.class}) //not mandatory, its configured in ejb-jar.xml
+@Interceptors({LoggingInterceptor.class}) //nao eh obrigatorio, pode ser configurado no ejb-jar.xml
 public class ChatBean {
 
 	private Set<String> salas = new HashSet<String>();
@@ -25,7 +25,7 @@ public class ChatBean {
 		this.salas.add(sala);
 	}
 
-	@Schedule(second ="*/50 ",minute ="*",hour ="*")
+	@Schedule(second ="*/5 ",minute ="*",hour ="*")
 	public List<String> listaSalas() {
 		System.out.println("Listando as salas");
 		return new ArrayList<String>(this.salas);
