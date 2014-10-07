@@ -22,25 +22,28 @@ public class SecureLoginModule implements LoginModule{
 
 	@Override
 	public boolean abort() throws LoginException {
-		// TODO Auto-generated method stub
+		System.out.println("Called abort method");
+		System.exit(-1);
 		return false;
 	}
 
 	@Override
 	public boolean commit() throws LoginException {
-		// TODO Auto-generated method stub
+		System.out.println("Called commit method");
 		return false;
 	}
 
 	@Override
 	public void initialize(Subject arg0, CallbackHandler callBackHandler,
 			Map<String, ?> arg2, Map<String, ?> arg3) {
+		System.out.println("Called initialize method");
 		callbackHandler = callBackHandler;
 		
 	}
 
 	@Override
 	public boolean login() throws LoginException {
+		System.out.println("Called login method");
 		Callback[] callBackArray = new Callback[2];
 		callBackArray[0] = new NameCallback("User Name:");
 		callBackArray[1] = new PasswordCallback("Password:", false);
@@ -69,7 +72,7 @@ public class SecureLoginModule implements LoginModule{
 
 	@Override
 	public boolean logout() throws LoginException {
-		// TODO Auto-generated method stub
+		System.out.println("Called logout method");
 		return false;
 	}
 
